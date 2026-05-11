@@ -157,6 +157,9 @@ ENV/
 env.bak/
 venv.bak/
 
+.opencode/*
+openspec/*
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -219,3 +222,5 @@ __marimo__/
 
 data/*
 outputs/*
+node_modules/
+qa_v2/
