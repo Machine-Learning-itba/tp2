@@ -2,7 +2,8 @@
 
 ## Sistema de diseño
 
-**Dimensiones:** 33.87 × 19.05 cm (16:9)
+**Herramienta:** MARP (Markdown → PDF/PPTX)
+**Dimensiones:** 16:9
 
 ### Paleta de colores
 
@@ -19,35 +20,23 @@
 | `box_bg` | `#EFF6FF` | cajas de highlight / callout |
 | `divider` | `#CBD5E1` | líneas separadoras |
 
-### Tipografía (Google Fonts — compatibles con Google Slides)
+### Tipografía
 
-- **Títulos principales:** `Plus Jakarta Sans Bold` (700)
-- **Subtítulos / headers de sección:** `Plus Jakarta Sans SemiBold` (600)
-- **Cuerpo / bullets:** `DM Sans Regular` (400)
-- **Código / valores numéricos destacados:** `JetBrains Mono` (400)
-- **Tamaños:** Título slide = 36pt | Subtitle = 22pt | Body = 16pt | Caption = 12pt
-
-### Elementos de diseño
-
-- Banda de color izquierda (0.5 cm) en slides de contenido — color varía por sección
-- Número de slide bottom-right, `text_muted`, 10pt
-- Header strip (`#1E40AF`, 14% altura) con título de sección en blanco en slides interiores
-- Cajas `callout` redondeadas (borde radius 8pt) para datos clave
+- **Títulos:** `Plus Jakarta Sans Bold` (700)
+- **Cuerpo:** `DM Sans Regular` (400)
+- **Código / valores numéricos:** `JetBrains Mono` (400)
 
 ---
 
-## Slides (16 en total)
+## Slides (22 en total)
 
 ### SLIDE 1 — Portada
 
 - **Fondo:** `#0F172A`
-- **Elementos:**
-  - Rectángulo decorativo esquina inferior derecha: gradiente `#1E40AF` → `#0891B2`
-  - Supertítulo: `"72.75 Aprendizaje Automático — ITBA"` · blanco 40% opacidad · 13pt
-  - Título: `"Clasificación Supervisada"` · blanco · 42pt · Plus Jakarta Sans Bold
-  - Subtítulo: `"Detección de Cáncer de Mama — Wisconsin Dataset"` · `#93C5FD` · 22pt
-  - Línea decorativa horizontal `#0891B2`, 3px, ancho 40% desde izquierda
-  - Footer: autor + fecha · 11pt · gris claro
+- **Título:** "Clasificación Supervisada"
+- **Subtítulo:** "Detección de Cáncer de Mama — Wisconsin Dataset"
+- **Supertítulo:** "72.75 Aprendizaje Automático — ITBA"
+- **Footer:** autor + fecha
 
 ---
 
@@ -80,8 +69,8 @@
   3. `Train/Test Split 80/20 estratificado`
   4. `StandardScaler dentro de CV/Pipeline`
 - **Bullets:**
-  - Eliminación de features correlacionadas (`|r| > 0.95`): 13 features removidas
-  - Eliminación de outliers extremos (IQR × 3)
+  - Eliminación de features correlacionadas (`|r| > 0.80`): 13 features removidas
+  - Outliers retenidos — valores extremos son clinicamente significativos (mayormente malignos)
   - Split 80/20 estratificado → preserva proporción B/M en ambos sets
   - StandardScaler aplicado DENTRO del pipeline → sin data leakage
 - **Callout** (fondo `#FEF3C7`, borde `#F59E0B`):
@@ -179,7 +168,7 @@
 - **Bullets:**
   - SVM lidera: Recall=0.959, ROC-AUC=0.995
   - NB y KNN empatan: Recall=0.906
-  - LDA más bajo: Recall=0.876 — frontera lineal insuficiente
+  - LDA más bajo: Recall=0.877 — frontera lineal insuficiente
 - **Callout:** "Todos los resultados son de validación cruzada 5-fold — test set intacto"
 
 ---
@@ -210,42 +199,112 @@
 
 ---
 
-### SLIDE 11 — Curvas de validación 1D
+### SLIDE 11 — Curva de Validación: Naive Bayes
 
 - **Banda izquierda:** `#16A34A`
-- **Título:** "Tuning 1D: Curvas de Validación"
-- **Layout:** 3 imágenes en fila con caption debajo de cada una
-  - `outputs/svm/val_curve_C (regularización).png` → Caption: "SVM: C óptimo ~1–10; C muy alto → overfit"
-  - `outputs/knn/val_curve_k (número de vecinos).png` → Caption: "KNN: k óptimo 5–9; k=1 overfittea, k grande underfittea"
-  - `outputs/rf/val_curve_Profundidad máxima del árbol.png` → Caption: "RF: max_depth ~6–10 equilibra; sin límite → overfit"
+- **Título:** "Curva de Validación — Naive Bayes"
+- **Imagen:** `outputs/naive_bayes/val_curve_Var smoothing.png` (65% ancho, centrada)
+- **Bullets:**
+  - Parámetro: `var_smoothing` (escala logarítmica)
+  - NB tiene poca sensibilidad al smoothing → underfitting estructural
+  - Train y CV cerca → gap bajo, pero rendimiento moderado
 
 ---
 
-### SLIDE 12 — Grid 2D: Heatmaps
+### SLIDE 12 — Curva de Validación: LDA
 
 - **Banda izquierda:** `#16A34A`
-- **Título:** "Tuning 2D: GridSearchCV — Heatmaps"
-- **Layout:** 3 imágenes en fila con caption
-  - `outputs/svm/hyperparam_grid.png` → Caption: "SVM: mejor C=1, kernel=rbf → Recall=0.959"
-  - `outputs/knn/hyperparam_grid.png` → Caption: "KNN: mejor k=7, weights=uniform → Recall=0.906"
-  - `outputs/rf/hyperparam_grid.png` → Caption: "RF: mejor max_depth=None, n_estimators=200 → Recall=0.929"
+- **Título:** "Curva de Validación — LDA"
+- **Imagen:** `outputs/lda/val_curve_Shrinkage (regularización).png` (65% ancho, centrada)
+- **Bullets:**
+  - Parámetro: `shrinkage` (regularización)
+  - LDA con shrinkage leve mejora ROC-AUC (0.989)
+  - Train y CV convergen → gap bajo
 
 ---
 
-### SLIDE 13 — Impacto del tuning
+### SLIDE 13 — Curva de Validación: SVM
+
+- **Banda izquierda:** `#16A34A`
+- **Título:** "Curva de Validación — SVM (C)"
+- **Imagen:** `outputs/svm/val_curve_C (regularización).png` (65% ancho, centrada)
+- **Bullets:**
+  - C óptimo ~1–10; C muy alto → overfit
+  - Kernel RBF con C=1 ya es estable → default razonable
+
+---
+
+### SLIDE 14 — Curva de Validación: KNN
+
+- **Banda izquierda:** `#16A34A`
+- **Título:** "Curva de Validación — KNN (k vecinos)"
+- **Imagen:** `outputs/knn/val_curve_k (número de vecinos).png` (65% ancho, centrada)
+- **Bullets:**
+  - k óptimo 5–9; k=1 overfittea, k grande underfittea
+  - Trade-off claro entre bias y varianza
+
+---
+
+### SLIDE 15 — Curva de Validación: Random Forest
+
+- **Banda izquierda:** `#16A34A`
+- **Título:** "Curva de Validación — RF (max_depth)"
+- **Imagen:** `outputs/rf/val_curve_Profundidad_maxima_del_arbol.png` (65% ancho, centrada)
+- **Bullets:**
+  - max_depth ≤ 4 mantiene gap bajo 0.05; ≥5 → overfitting claro
+  - Train alcanza 1.0 desde depth=8 → memoriza, gap crece a 0.07
+
+---
+
+### SLIDE 16 — GridSearch: SVM
+
+- **Banda izquierda:** `#16A34A`
+- **Título:** "GridSearchCV — SVM"
+- **Imagen:** `outputs/svm/hyperparam_grid.png` (65% ancho, centrada)
+- **Bullets:**
+  - GridSearch confirmó: C=1.0, kernel=rbf → Recall CV = 0.959
+  - Kernel lineal consistentemente inferior
+
+---
+
+### SLIDE 17 — GridSearch: KNN
+
+- **Banda izquierda:** `#16A34A`
+- **Título:** "GridSearchCV — KNN"
+- **Imagen:** `outputs/knn/hyperparam_grid.png` (65% ancho, centrada)
+- **Bullets:**
+  - GridSearch halló: k=3, weights=uniform → Recall CV = 0.924
+  - Default k=5 → Recall 0.918 — gap aceptable (0.010), suficiente para este dataset
+  - k=3 gap = 0.022 (no overfitting severo, pero default ya es razonable)
+
+---
+
+### SLIDE 18 — GridSearch: Random Forest
+
+- **Banda izquierda:** `#16A34A`
+- **Título:** "GridSearchCV — Random Forest"
+- **Imagen:** `outputs/rf/hyperparam_grid.png` (65% ancho, centrada)
+- **Bullets:**
+  - GridSearch halló: max_depth=8, n_estimators=100 → Recall CV = 0.929
+  - Se eligió max_depth=4: gap baja de 0.071 a 0.052 — reduce overfitting
+  - max_depth ≥5: train alcanza 1.0 → memoriza; max_depth=None gap idéntico a 8
+
+---
+
+### SLIDE 19 — Impacto del tuning
 
 - **Banda izquierda:** `#16A34A`
 - **Título:** "Impacto del Tuning de Hiperparámetros"
 - **Imagen:** `outputs/before_after_tuning.png` (70% ancho, centrada)
 - **Bullets:**
-  - SVM: sin cambio — C=1 ya era el default óptimo, confirma estabilidad
-  - RF: leve mejora en Recall (+0.005) con n_estimators=200
-  - LDA: mejora ROC-AUC con shrinkage=0.1 (solver lsqr)
-  - KNN: sin mejora significativa
+  - SVM: sin cambio — C=1 confirmado óptimo por GridSearch
+  - LDA: Recall +0.006, ROC-AUC +0.002 (shrinkage=0.1) — única mejora sustancial
+  - RF: Recall -0.006 (max_depth=None→4) — reduce gap de 0.071 a 0.052
+  - KNN / NB: sin cambio — defaults sklearn ya razonables
 
 ---
 
-### SLIDE 14 — Selección del modelo final (slide de énfasis)
+### SLIDE 20 — Selección del modelo final (slide de énfasis)
 
 - **Fondo:** `#0F172A` (oscuro)
 - **Título:** "Selección del Modelo Final" · blanco · 36pt
@@ -256,12 +315,12 @@
   1. **SVM — 0.959** ✓ seleccionado
   2. RF — 0.929
   3. KNN / NB — 0.906
-  4. LDA — 0.882
+  4. LDA — 0.877
 - **Nota:** "SVM con kernel RBF, C=1 → mejor Recall CV Y mejor ROC-AUC CV"
 
 ---
 
-### SLIDE 15 — Evaluación final en test: SVM
+### SLIDE 21 — Evaluación final en test: SVM
 
 - **Banda izquierda:** `#DC2626`
 - **Título:** "Evaluación en Test — SVM (RBF, C=1)"
@@ -281,7 +340,7 @@
 
 ---
 
-### SLIDE 16 — Conclusiones
+### SLIDE 22 — Conclusiones
 
 - **Fondo:** `#0F172A`
 - **Título:** "Conclusiones" · blanco
@@ -301,24 +360,37 @@
 
 ---
 
+## Métricas reales (source: metrics.txt)
+
+| Modelo | Recall CV | ROC-AUC CV | Recall Test | ROC-AUC Test | F1 Test | Accuracy Test |
+|---|---|---|---|---|---|---|
+| SVM | 0.959 | 0.995 | 0.929 | 0.995 | 0.940 | 0.956 |
+| RF | 0.929 | 0.990 | 0.881 | 0.996 | 0.937 | 0.956 |
+| KNN | 0.906 | 0.983 | 0.810 | 0.989 | 0.872 | 0.912 |
+| NB | 0.906 | 0.985 | 0.881 | 0.988 | 0.892 | 0.921 |
+| LDA | 0.877 | 0.989 | 0.881 | 0.998 | 0.937 | 0.956 |
+
+---
+
 ## Implementación técnica
 
-### Dependencias
+### Herramienta: MARP
 
 ```bash
-pip install python-pptx pillow
+npm install -g @marp-team/marp-cli
+marp presentacion.md --pdf
+marp presentacion.md --pptx
 ```
-
-Fuentes descargadas localmente desde Google Fonts (Plus Jakarta Sans, DM Sans, JetBrains Mono) y referenciadas por nombre — en Google Slides aparecerán correctamente si están disponibles allí.
 
 ### Paths de imágenes
 
 ```
-BASE = /home/jaiba/tp2/outputs/
 outputs/cv_baseline_comparison.png
 outputs/before_after_tuning.png
 outputs/overfitting_train_vs_cv.png
 outputs/overfitting_gaps.png
+outputs/naive_bayes/val_curve_Var smoothing.png
+outputs/lda/val_curve_Shrinkage (regularización).png
 outputs/svm/val_curve_C (regularización).png
 outputs/knn/val_curve_k (número de vecinos).png
 outputs/rf/val_curve_Profundidad máxima del árbol.png
@@ -329,48 +401,23 @@ outputs/svm/confusion_matrix_test.png
 outputs/svm/roc_curve_test.png
 ```
 
-### Archivo de salida
+### Archivos de salida
 
 ```
-/home/jaiba/tp2/outputs/presentacion_clasificacion.pptx
+presentacion.pdf
+presentacion.pptx
 ```
 
-### Estructura del script Python
+---
 
-```python
-from pptx import Presentation
-from pptx.util import Cm, Pt, Emu
-from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN
-from pptx.util import Inches
-import copy
+## Correcciones realizadas vs plan anterior
 
-SLIDE_W = Cm(33.87)
-SLIDE_H = Cm(19.05)
-
-# Colores
-BG_DARK      = RGBColor(0x0F, 0x17, 0x2A)
-BG_LIGHT     = RGBColor(0xF8, 0xFA, 0xFC)
-PRIMARY      = RGBColor(0x1E, 0x40, 0xAF)
-ACCENT_RED   = RGBColor(0xDC, 0x26, 0x26)
-ACCENT_GREEN = RGBColor(0x16, 0xA3, 0x4A)
-ACCENT_TEAL  = RGBColor(0x08, 0x91, 0xB2)
-ACCENT_VIOLET= RGBColor(0x7C, 0x3A, 0xED)
-TEXT_DARK    = RGBColor(0x1E, 0x29, 0x3B)
-TEXT_MUTED   = RGBColor(0x64, 0x74, 0x8B)
-BOX_BG       = RGBColor(0xEF, 0xF6, 0xFF)
-WHITE        = RGBColor(0xFF, 0xFF, 0xFF)
-
-# Helpers
-def add_slide(prs): ...           # agrega slide en blanco
-def set_bg(slide, color): ...     # fondo sólido
-def add_band(slide, color): ...   # banda izquierda 0.5cm
-def add_header(slide, text, color): ...  # strip superior con título
-def add_text_box(slide, text, left, top, width, height, ...): ...
-def add_callout(slide, text, left, top, width, height, bg, border): ...
-def add_image(slide, path, left, top, width): ...
-def add_table(slide, data, headers, left, top, width, height): ...
-def add_slide_number(slide, n): ...
-
-# Construir slides 1-16 usando helpers
-```
+| Item | Antes | Ahora |
+|---|---|---|
+| Umbral correlación | `|r| > 0.95` (incorrecto) | `|r| > 0.80` (correcto, verificado en 01_limpieza.ipynb) |
+| Outliers | "Eliminación de outliers extremos (IQR × 3)" | "Retenidos — clinicamente significativos" |
+| LDA Recall CV | 0.882 | 0.877 (valor real de metrics.txt) |
+| Slides curvas validación | 1 slide con 3 imágenes | 5 slides (1 por modelo) |
+| Slides gridsearch | 1 slide con 3 imágenes | 3 slides (1 por modelo) |
+| Total slides | 16 | 22 |
+| Herramienta | python-pptx | MARP |
